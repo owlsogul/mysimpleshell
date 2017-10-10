@@ -23,12 +23,12 @@ int main(){
   boolean shellLoop = true;
   char *cmd = NULL, **argv = NULL;
   int argc = 0;
-  pid_t pid = NULL;
+  pid_t pid = -1;
 
   while (shellLoop){
     showPrompt();
     receiveCommand(&cmd, &argv, &argc);
-    pidCreate(*pid);
+    pidCreate(&pid);
     initCommand(&cmd, &argv, &argc);
   }
   return 0;
@@ -95,7 +95,7 @@ void initCommand(char** cmd, char*** argv, int* argc){
   free(*argv);
   *cmd = NULL;
   *argv = NULL;
-  *argc = NULL;
+  *argc = 0;
 }
 
 void pidCreate(pid_t* pid){
@@ -109,7 +109,7 @@ void processPid(pid_t* pid, char** cmd, char*** argv){
   }
   else if (*pid == 0){
     // child process
-    execve(*cmd, *argv);
+    execve(*cmd, *argv, 0);
   }
   else {
     // parent process
