@@ -5,6 +5,8 @@
 
 #include <sys/types.h> // to use variable type of system
 #include <unistd.h> // to use system call
+#include <errno.h>
+#include <sys/wait.h>
 
 void showPrompt();
 void receiveCommand(char** cmd, char*** argv, int* argc);
@@ -98,6 +100,7 @@ void initCommand(char** cmd, char*** argv, int* argc){
 
 void processCommand(char** cmd, char*** argv){
   pid_t pid;
+  int status;
   pid = fork();
   if (pid < 0){
     // some error occur when make child process
@@ -108,7 +111,12 @@ void processCommand(char** cmd, char*** argv){
   }
   else {
     // parent process
-    wait(NULL);
+    // first challenge - wait(NULL);
+    while(waitpid(pid, &status, 0) < 0)
+    if (errno != EINTR){
+      status = -1;
+      break;
+    }
     printf("Child Process is completed");
   }
   return;
