@@ -10,7 +10,7 @@ void showPrompt();
 void receiveCommand(char** cmd, char*** argv, int* argc);
 void initCommand(char** cmd, char*** argv, int* argc);
 void pidCreate(pid_t* pid);
-void processPid(pid_t* pid, char** cmd, char*** argv);
+void processCommand(pid_t* pid, char** cmd, char*** argv);
 
 #define true 1
 #define false 0
@@ -29,6 +29,7 @@ int main(){
     showPrompt();
     receiveCommand(&cmd, &argv, &argc);
     pidCreate(&pid);
+    processCommand(&pid, &cmd, &argv);
     initCommand(&cmd, &argv, &argc);
   }
   return 0;
@@ -103,7 +104,7 @@ void pidCreate(pid_t* pid){
   return;
 }
 
-void processPid(pid_t* pid, char** cmd, char*** argv){
+void processCommand(pid_t* pid, char** cmd, char*** argv){
   if (*pid < 0){
     // some error occur when make child process
   }
