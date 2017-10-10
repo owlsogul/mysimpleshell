@@ -19,6 +19,8 @@ typedef int boolean;
 
 #define MAX_INPUT_SIZE 100
 
+#define DEBUG
+
 int main(){
 
   boolean shellLoop = true;
@@ -28,6 +30,14 @@ int main(){
   while (shellLoop){
     showPrompt();
     receiveCommand(&cmd, &argv, &argc);
+    #ifdef DEBUG
+    printf("my Command is : %s\n", cmd);
+    printf("Arguments... ");
+    for (int i = 0; i < argc; i++){
+      printf("%s,", argv[i]);
+    }
+    printf("\n");
+    #endif
     processCommand(&cmd, &argv);
     initCommand(&cmd, &argv, &argc);
   }
