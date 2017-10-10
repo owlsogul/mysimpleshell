@@ -9,8 +9,7 @@
 void showPrompt();
 void receiveCommand(char** cmd, char*** argv, int* argc);
 void initCommand(char** cmd, char*** argv, int* argc);
-void pidCreate(pid_t* pid);
-void processCommand(pid_t* pid, char** cmd, char*** argv);
+void processCommand(char** cmd, char*** argv);
 
 #define true 1
 #define false 0
@@ -23,13 +22,11 @@ int main(){
   boolean shellLoop = true;
   char *cmd = NULL, **argv = NULL;
   int argc = 0;
-  pid_t pid = -1;
 
   while (shellLoop){
     showPrompt();
     receiveCommand(&cmd, &argv, &argc);
-    pidCreate(&pid);
-    processCommand(&pid, &cmd, &argv);
+    processCommand(&cmd, &argv);
     initCommand(&cmd, &argv, &argc);
   }
   return 0;
@@ -99,16 +96,13 @@ void initCommand(char** cmd, char*** argv, int* argc){
   *argc = 0;
 }
 
-void pidCreate(pid_t* pid){
-  *pid = fork();
-  return;
-}
-
-void processCommand(pid_t* pid, char** cmd, char*** argv){
-  if (*pid < 0){
+void processCommand(char** cmd, char*** argv){
+  pid_t pid;
+  pid = fork();
+  if (pid < 0){
     // some error occur when make child process
   }
-  else if (*pid == 0){
+  else if (pid == 0){
     // child process
     execve(*cmd, *argv, 0);
   }
