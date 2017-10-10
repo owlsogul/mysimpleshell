@@ -10,7 +10,7 @@ void showPrompt();
 void receiveCommand(char** cmd, char*** argv, int* argc);
 void initCommand(char** cmd, char*** argv, int* argc);
 void pidCreate(pid_t* pid);
-void processPid(pid_t* pid);
+void processPid(pid_t* pid, char** cmd, char*** argv);
 
 #define true 1
 #define false 0
@@ -28,6 +28,7 @@ int main(){
   while (shellLoop){
     showPrompt();
     receiveCommand(&cmd, &argv, &argc);
+    pidCreate(*pid);
     initCommand(&cmd, &argv, &argc);
   }
   return 0;
@@ -95,4 +96,25 @@ void initCommand(char** cmd, char*** argv, int* argc){
   *cmd = NULL;
   *argv = NULL;
   *argc = NULL;
+}
+
+void pidCreate(pid_t* pid){
+  *pid = fork();
+  return;
+}
+
+void processPid(pid_t* pid, char** cmd, char*** argv){
+  if (*pid < 0){
+    // some error occur when make child process
+  }
+  else if (*pid == 0){
+    // child process
+    execve(*cmd, *argv);
+  }
+  else {
+    // parent process
+    wait(NULL);
+    printf("Child Process is completed");
+  }
+  return;
 }
